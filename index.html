@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scorpion Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      background-color: black;
+    }    
+    #counter-full {
+      position:fixed;top:0px;left:0px;width:100%;height:100%;background-color:#333;
+      cursor:default;
+    }
+    .wrapper-counter {
+      padding:25px;
+      max-width:800px;
+      width:100%;
+      text-align:center;
+
+      margin:0 auto;
+      margin-top:15%;
+      
+
+    }
+    #counter {
+     
+      font-size:60px;
+      text-shadow:0px 0px 1px #fff;
+      color:#fff;
+      letter-spacing: 30px;
+    }
+    #counter span { 
+      color:#888; 
+ 
+      font-size:30px;
+      position:relative;
+      top:-27px;
+      left:-10px; 
+
+    } 
+    
+  </style>
+</head>
+<body>  
+ 
+  <div id="counter-full">
+  <div class="wrapper-counter">
+    <div id="counter"></div>
+  </div>
+</div>
+
+  <script src="./countUp.min.js"></script>
+  <script>
+    var counter;
+    var options;
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function() {
+      if (http.readyState == 4 && http.status == 200) {
+        var count = JSON.parse(http.response).count;
+        // document.getElementById('counter').innerHTML = count;
+
+        var options = {
+          useEasing: true,
+          useGrouping: true,
+          separator: ',',
+          decimal: '.',
+          prefix: '',
+          suffix: ''
+        };
+
+        demo = new CountUp("counter", 0, count, 0, 20, options);
+        demo.start();
+
+
+        window.setInterval(function() {
+          console.log("Updating")
+
+
+          var http2 = new XMLHttpRequest();
+
+          http2.onreadystatechange = function() {
+            if (http2.readyState == 4 && http2.status == 200) {
+              var count = JSON.parse(http2.response).count;
+              demo.update(count)
+            }
+          };
+          http2.open("GET", 'http://ec2-52-90-245-166.compute-1.amazonaws.com:4126/0011100001100100101110111111010101001101101101100001001011101111100100111010010110001000111110110', true);
+          http2.send(null);
+
+        }, 5000)
+      };
+    };
+    http.open("GET", 'http://ec2-52-90-245-166.compute-1.amazonaws.com:4126/0011100001100100101110111111010101001101101101100001001011101111100100111010010110001000111110110', true);
+    http.send(null);
+
+  </script>
+</body>
+</html>
